@@ -1,0 +1,23 @@
+{
+  "name": "shotline-server",
+  "version": "0.0.1",
+  "description": "A game server for Shotline.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/letconst/shotline-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/letconst/shotline-server/issues"
+  },
+  "homepage": "https://github.com/letconst/shotline-server#readme",
+  "dependencies": {
+    "dgram": "^1.0.1"
+  }
+}
