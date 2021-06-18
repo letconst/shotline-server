@@ -1,11 +1,14 @@
-const dgram = require('dgram');
+'use strict';
+
+const dgram        = require('dgram');
+const EventHandler = require('./modules/EventHandler');
+
+const server       = dgram.createSocket('udp4');
+const eventHandler = new EventHandler(server);
+const clients      = [];
 
 require('./modules/utils/initializer')();
-
-const server  = dgram.createSocket('udp4');
-const clients = [];
-
-const { PORT, MAX_CONNECTIONS } = process.env;
+const { PORT } = process.env;
 
 server.on('listening', () => {
     const address = server.address();
@@ -13,7 +16,7 @@ server.on('listening', () => {
 });
 
 server.on('message', (msg, info) => {
-
+    eventHandler.switchMessage(msg.toString(), info, clients);
 });
 
 server.on('error', (err) => {
