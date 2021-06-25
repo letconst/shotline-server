@@ -4,6 +4,15 @@ const NetworkHandler = require('./utils/NetworkHandler');
 require('./utils/initializer')();
 const { MAX_CONNECTIONS } = process.env;
 
+const eventType = {
+    Init      : 'Init',
+    Match     : 'Match',
+    Move      : 'Move',
+    Disconnect: 'Disconnect',
+    Refresh   : 'Refresh',
+    Error     : 'Error'
+}
+
 class EventHandler {
     /**
      * @type {module:dgram.Socket}
@@ -28,24 +37,23 @@ class EventHandler {
     switchMessage(msg, sender, clients) {
         const data = JSON.parse(msg);
 
-        if (!data.type) {
+        if (!data.Type) {
             console.error('Data has no Type');
 
-            data.type     = 'error';
-            data.errorMsg = 'イベントタイプが指定されていません';
+            data.Type    = eventType.Error;
+            data.Message = 'イベントタイプが指定されていません';
 
             this.networkHandler.emit(data, sender);
 
             return;
         }
 
-        switch (data.type) {
+        switch (data.Type) {
             // 初回接続
-            case 'init': {
+            case eventType.Init: {
                 const thisPlayerUuid = uuidv4();
 
-                data.type               = 'init';
-                data.uuid               = thisPlayerUuid;
+                data.Self.Uuid          = thisPlayerUuid;
                 clients[thisPlayerUuid] = sender;
 
                 this.networkHandler.emit(data, sender);
@@ -55,11 +63,11 @@ class EventHandler {
 
             // 部屋への参加 (マッチング)
             // TODO: 空きがなければ部屋作成
-            case 'join': {
+            case eventType.Match: {
                 // 満員なら弾く (暫定)
                 if (clients.length >= MAX_CONNECTIONS) {
-                    data.type     = 'error';
-                    data.errorMsg = '部屋が満員です';
+                    data.Type    = eventType.Error;
+                    data.Message = '部屋が満員です';
 
                     this.networkHandler.emit(data, sender);
 
@@ -67,11 +75,11 @@ class EventHandler {
                 }
 
                 // UUIDがなければ弾く
-                if (!data.uuid) {
+                if (!data.Self.Uuid) {
                     console.error(`${sender.address}:${sender.port} has no UUID`);
 
-                    data.type     = 'error';
-                    data.errorMsg = 'UUIDが設定されていません';
+                    data.Type    = eventType.Error;
+                    data.Message = 'UUIDが設定されていません';
 
                     this.networkHandler.emit(data, sender);
 
@@ -80,9 +88,9 @@ class EventHandler {
 
                 // 対戦相手情報を送信
                 for (const uuid in clients) {
-                    data.rival.address = clients[uuid].address;
-                    data.rival.port    = clients[uuid].port;
-                    data.rival.uuid    = uuid;
+                    data.Rival.Address = clients[uuid].address;
+                    data.Rival.Port    = clients[uuid].port;
+                    data.Rival.Uuid    = uuid;
 
                     this.networkHandler.emit(data, sender);
                 }
@@ -93,19 +101,19 @@ class EventHandler {
             }
 
             // 座標更新
-            case 'move' : {
+            case eventType.Move : {
                 break;
             }
 
             // 切断
-            case 'disconnect': {
+            case eventType.Disconnect: {
                 for (const uuid in clients) {
-                    if (uuid !== data.uuid) continue;
+                    if (uuid !== data.Self.Uuid) continue;
 
                     delete clients[uuid];
 
-                    data.type = 'client_reload';
-                    data.uuid = uuid;
+                    data.Type       = eventType.Refresh;
+                    data.Rival.Uuid = uuid;
 
                     this.networkHandler.broadcast(data, clients);
 
@@ -118,8 +126,8 @@ class EventHandler {
             default: {
                 console.error(`${data.type} is unknown type`);
 
-                data.type     = 'error';
-                data.errorMsg = `イベントタイプ「${data.type}」は存在しません`;
+                data.Type    = eventType.Error;
+                data.Message = `イベントタイプ「${data.type}」は存在しません`;
 
                 this.networkHandler.emit(data, sender);
 
