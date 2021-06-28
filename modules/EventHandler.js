@@ -5,7 +5,7 @@ global.eventType = {
     Init      : 'Init',
     Match     : 'Match',
     Joined    : 'Joined',
-    Move      : 'Move',
+    PlayerMove: 'PlayerMove',
     Disconnect: 'Disconnect',
     Refresh   : 'Refresh',
     Error     : 'Error'
@@ -15,6 +15,7 @@ const events = {
     onInit      : require('./events/onInit'),
     onMatch     : require('./events/onMatch'),
     onJoined    : require('./events/onJoined'),
+    onPlayerMove: require('./events/onPlayerMove'),
     onDisconnect: require('./events/onDisconnect')
 }
 
