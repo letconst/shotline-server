@@ -30,10 +30,8 @@ class NetworkHandler {
      * @param {RemoteInfo[]} clients 送信先のクライアント
      */
     broadcast(data, clients) {
-        const msg = JSON.stringify(data);
-
-        for (const client of clients) {
-            this.emit(msg, client);
+        for (const client in clients) {
+            this.emit(data, clients[client]);
         }
     }
 

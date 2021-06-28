@@ -5,7 +5,6 @@ const EventHandler = require('./modules/EventHandler');
 
 const server       = dgram.createSocket('udp4');
 const eventHandler = new EventHandler(server);
-const clients      = [];
 
 require('./modules/utils/initializer')();
 const { PORT } = process.env;
@@ -16,7 +15,7 @@ server.on('listening', () => {
 });
 
 server.on('message', (msg, info) => {
-    eventHandler.switchMessage(msg.toString(), info, clients);
+    eventHandler.switchMessage(msg.toString(), info);
 });
 
 server.on('error', (err) => {

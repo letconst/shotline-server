@@ -19,12 +19,15 @@ class EventHandler {
      */
     #server;
 
+    #clients;
+
     /**
      *
      * @param {module:dgram.Socket} server
      */
     constructor(server) {
         this.#server        = server;
+        this.#clients       = [];
         this.networkHandler = new NetworkHandler(this.#server);
     }
 
@@ -32,9 +35,8 @@ class EventHandler {
      * 受信データの種類ごとに処理をする
      * @param {string} msg 受信データ
      * @param {RemoteInfo} sender 受信クライアント
-     * @param {RemoteInfo[]} clients 送信先のクライアント
      */
-    switchMessage(msg, sender, clients) {
+    switchMessage(msg, sender) {
         const data = JSON.parse(msg);
 
         if (!data.Type) {
@@ -53,8 +55,8 @@ class EventHandler {
             case eventType.Init: {
                 const thisPlayerUuid = uuidv4();
 
-                data.Self.Uuid          = thisPlayerUuid;
-                clients[thisPlayerUuid] = sender;
+                data.Self.Uuid                = thisPlayerUuid;
+                this.#clients[thisPlayerUuid] = sender;
 
                 this.networkHandler.emit(data, sender);
 
@@ -65,7 +67,7 @@ class EventHandler {
             // TODO: 空きがなければ部屋作成
             case eventType.Match: {
                 // 満員なら弾く (暫定)
-                if (clients.length >= MAX_CONNECTIONS) {
+                if (this.#clients.length >= MAX_CONNECTIONS) {
                     data.Type    = eventType.Error;
                     data.Message = '部屋が満員です';
 
@@ -86,16 +88,18 @@ class EventHandler {
                     return;
                 }
 
-                // 対戦相手情報を送信
-                for (const uuid in clients) {
-                    data.Rival.Address = clients[uuid].address;
-                    data.Rival.Port    = clients[uuid].port;
+                // 対戦相手が待機していれば情報を送信
+                for (const uuid in this.#clients) {
+                    if (data.Self.Uuid === uuid) continue;
+
+                    data.Rival.Address = this.#clients[uuid].address;
+                    data.Rival.Port    = this.#clients[uuid].port;
                     data.Rival.Uuid    = uuid;
 
-                    this.networkHandler.emit(data, sender);
+                    this.networkHandler.broadcast(data, this.#clients);
                 }
 
-                console.log(`${sender.address}:${sender.port} (${data.uuid}) joined the room`);
+                console.log(`${sender.address}:${sender.port} (${data.Self.Uuid}) joined the room`);
 
                 break;
             }
@@ -107,15 +111,15 @@ class EventHandler {
 
             // 切断
             case eventType.Disconnect: {
-                for (const uuid in clients) {
+                for (const uuid in this.#clients) {
                     if (uuid !== data.Self.Uuid) continue;
 
-                    delete clients[uuid];
+                    delete this.#clients[uuid];
 
                     data.Type       = eventType.Refresh;
                     data.Rival.Uuid = uuid;
 
-                    this.networkHandler.broadcast(data, clients);
+                    this.networkHandler.broadcast(data, this.#clients);
 
                     break;
                 }
