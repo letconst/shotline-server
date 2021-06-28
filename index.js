@@ -6,6 +6,8 @@ const EventHandler = require('./modules/EventHandler');
 const server       = dgram.createSocket('udp4');
 const eventHandler = new EventHandler(server);
 
+global.clients = [];
+
 require('./modules/utils/initializer')();
 const { PORT } = process.env;
 

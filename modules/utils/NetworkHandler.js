@@ -1,26 +1,14 @@
 class NetworkHandler {
     /**
-     * @type {module:dgram.Socket}
-     */
-    #server;
-
-    /**
-     *
-     * @param {module:dgram.Socket} server
-     */
-    constructor(server) {
-        this.#server = server;
-    }
-
-    /**
      * 指定のクライアントにデータを送信する
      * @param {Object} data 送信データ
      * @param {RemoteInfo} sender 対象のクライアント
+     * @param {module:dgram.Socket} server
      */
-    emit(data, sender) {
+    static emit(data, sender, server) {
         const msg = JSON.stringify(data);
 
-        this.#server.send(msg, sender.port, sender.address);
+        server.send(msg, sender.port, sender.address);
         console.log(`Message sent to ${sender.address}:${sender.port}`);
     }
 
@@ -28,10 +16,11 @@ class NetworkHandler {
      * 全クライアントにデータを送信する
      * @param {Object} data 送信データ
      * @param {RemoteInfo[]} clients 送信先のクライアント
+     * @param {module:dgram.Socket} server
      */
-    broadcast(data, clients) {
+    static broadcast(data, clients, server) {
         for (const client in clients) {
-            this.emit(data, clients[client]);
+            this.emit(data, clients[client], server);
         }
     }
 
@@ -39,16 +28,31 @@ class NetworkHandler {
      * 自分 (sender) 以外の全クライアントにデータを送信する
      * @param {Object} data 送信データ
      * @param {RemoteInfo} sender 自身のクライアント
+     * @param {module:dgram.Socket} server
      * @param {RemoteInfo[]} clients 送信祭のクライアント
      */
-    broadcastExceptSelf(data, sender, clients) {
+    static broadcastExceptSelf(data, sender, server, clients) {
         const msg = JSON.stringify(data);
 
         for (const client of clients) {
             if (client.address === sender.address) continue;
 
-            this.emit(msg, client);
+            this.emit(msg, client, server);
         }
+    }
+
+    /**
+     * 指定のクライアントにエラーデータを送信する
+     * @param {Object} data
+     * @param {RemoteInfo} sender
+     * @param {module:dgram.Socket} server
+     * @param {string} message
+     */
+    static emitError(data, sender, server, message) {
+        data.Type    = eventType.Error;
+        data.Message = message;
+
+        this.emit(data, sender, server);
     }
 }
 

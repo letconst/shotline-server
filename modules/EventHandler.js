@@ -1,16 +1,21 @@
-const { v4: uuidv4 } = require('uuid');
 const NetworkHandler = require('./utils/NetworkHandler');
 
-require('./utils/initializer')();
-const { MAX_CONNECTIONS } = process.env;
-
-const eventType = {
+// TODO: 非global化
+global.eventType = {
     Init      : 'Init',
     Match     : 'Match',
+    Joined    : 'Joined',
     Move      : 'Move',
     Disconnect: 'Disconnect',
     Refresh   : 'Refresh',
     Error     : 'Error'
+}
+
+const events = {
+    onInit      : require('./events/onInit'),
+    onMatch     : require('./events/onMatch'),
+    onJoined    : require('./events/onJoined'),
+    onDisconnect: require('./events/onDisconnect')
 }
 
 class EventHandler {
@@ -19,16 +24,12 @@ class EventHandler {
      */
     #server;
 
-    #clients;
-
     /**
      *
      * @param {module:dgram.Socket} server
      */
     constructor(server) {
-        this.#server        = server;
-        this.#clients       = [];
-        this.networkHandler = new NetworkHandler(this.#server);
+        this.#server = server;
     }
 
     /**
@@ -39,104 +40,24 @@ class EventHandler {
     switchMessage(msg, sender) {
         const data = JSON.parse(msg);
 
+        // イベントタイプが指定されいない場合はエラー
         if (!data.Type) {
             console.error('Data has no Type');
 
-            data.Type    = eventType.Error;
-            data.Message = 'イベントタイプが指定されていません';
-
-            this.networkHandler.emit(data, sender);
+            NetworkHandler.emitError(data, sender, this.#server, 'イベントタイプが指定されていません');
 
             return;
         }
 
-        switch (data.Type) {
-            // 初回接続
-            case eventType.Init: {
-                const thisPlayerUuid = uuidv4();
+        const eventKey = `on${data.Type}`;
 
-                data.Self.Uuid                = thisPlayerUuid;
-                this.#clients[thisPlayerUuid] = sender;
+        // イベント処理があれば実行
+        if (events.hasOwnProperty(eventKey)) {
+            events[eventKey](data, sender, this.#server);
+        } else {
+            console.error(`${data.type} is unknown type`);
 
-                this.networkHandler.emit(data, sender);
-
-                break;
-            }
-
-            // 部屋への参加 (マッチング)
-            // TODO: 空きがなければ部屋作成
-            case eventType.Match: {
-                // 満員なら弾く (暫定)
-                if (this.#clients.length >= MAX_CONNECTIONS) {
-                    data.Type    = eventType.Error;
-                    data.Message = '部屋が満員です';
-
-                    this.networkHandler.emit(data, sender);
-
-                    return;
-                }
-
-                // UUIDがなければ弾く
-                if (!data.Self.Uuid) {
-                    console.error(`${sender.address}:${sender.port} has no UUID`);
-
-                    data.Type    = eventType.Error;
-                    data.Message = 'UUIDが設定されていません';
-
-                    this.networkHandler.emit(data, sender);
-
-                    return;
-                }
-
-                // 対戦相手が待機していれば情報を送信
-                for (const uuid in this.#clients) {
-                    if (data.Self.Uuid === uuid) continue;
-
-                    data.Rival.Address = this.#clients[uuid].address;
-                    data.Rival.Port    = this.#clients[uuid].port;
-                    data.Rival.Uuid    = uuid;
-
-                    this.networkHandler.broadcast(data, this.#clients);
-                }
-
-                console.log(`${sender.address}:${sender.port} (${data.Self.Uuid}) joined the room`);
-
-                break;
-            }
-
-            // 座標更新
-            case eventType.Move : {
-                break;
-            }
-
-            // 切断
-            case eventType.Disconnect: {
-                for (const uuid in this.#clients) {
-                    if (uuid !== data.Self.Uuid) continue;
-
-                    delete this.#clients[uuid];
-
-                    data.Type       = eventType.Refresh;
-                    data.Rival.Uuid = uuid;
-
-                    this.networkHandler.broadcast(data, this.#clients);
-
-                    break;
-                }
-
-                break;
-            }
-
-            default: {
-                console.error(`${data.type} is unknown type`);
-
-                data.Type    = eventType.Error;
-                data.Message = `イベントタイプ「${data.type}」は存在しません`;
-
-                this.networkHandler.emit(data, sender);
-
-                break;
-            }
+            NetworkHandler.emitError(data, sender, this.#server, `イベントタイプ「${data.type}」は存在しないか、処理が割り当てられていません`);
         }
     }
 }
