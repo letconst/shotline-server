@@ -32,12 +32,11 @@ class NetworkHandler {
      * @param {RemoteInfo[]} clients 送信祭のクライアント
      */
     static broadcastExceptSelf(data, sender, server, clients) {
-        const msg = JSON.stringify(data);
+        for (const uuid in clients) {
+            if (clients[uuid].address === sender.address &&
+                clients[uuid].port === sender.port) continue;
 
-        for (const client of clients) {
-            if (client.address === sender.address) continue;
-
-            this.emit(msg, client, server);
+            this.emit(data, clients[uuid], server);
         }
     }
 
