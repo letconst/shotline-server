@@ -13,12 +13,13 @@ global.eventType = {
 }
 
 const events = {
-    onInit      : require('./events/onInit'),
-    onMatch     : require('./events/onMatch'),
-    onJoined    : require('./events/onJoined'),
-    onPlayerMove: require('./events/onPlayerMove'),
-    onBulletMove: require('./events/onBulletMove'),
-    onDisconnect: require('./events/onDisconnect')
+    onInit       : require('./events/onInit'),
+    onMatch      : require('./events/onMatch'),
+    onJoined     : require('./events/onJoined'),
+    onPlayerMove : require('./events/onPlayerMove'),
+    onBulletMove : require('./events/onBulletMove'),
+    onRoundUpdate: require('./events/onRoundUpdate'),
+    onDisconnect : require('./events/onDisconnect')
 }
 
 class EventHandler {

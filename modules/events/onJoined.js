@@ -1,4 +1,3 @@
-const EventHandler   = require('../EventHandler');
 const NetworkHandler = require('../utils/NetworkHandler');
 
 /**

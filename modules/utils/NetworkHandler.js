@@ -9,7 +9,7 @@ class NetworkHandler {
         const msg = JSON.stringify(data);
 
         server.send(msg, sender.port, sender.address);
-        console.log(`Message sent to ${sender.address}:${sender.port}`);
+        // console.log(`Message sent to ${sender.address}:${sender.port}`);
     }
 
     /**
