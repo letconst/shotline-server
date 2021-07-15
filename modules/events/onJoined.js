@@ -1,5 +1,8 @@
 const NetworkHandler = require('../utils/NetworkHandler');
 
+require('../utils/initializer')();
+const { MAX_CONNECTIONS } = process.env;
+
 /**
  * 部屋への参加時の処理
  * @param {Object} data
@@ -23,7 +26,7 @@ module.exports = (data, sender, server) => {
     }
 
     // 全プレイヤーが遷移してたらゲーム開始
-    if (joinedCount === 2) {
+    if (joinedCount === Number(MAX_CONNECTIONS)) {
         NetworkHandler.broadcast(data, clients, server);
     }
 }
