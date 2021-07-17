@@ -1,11 +1,15 @@
 'use strict';
 
-const dgram        = require('dgram');
+const dgram  = require('dgram');
+const server = dgram.createSocket('udp4');
+
+module.exports = {
+    server: server
+}
+
 const EventHandler = require('./modules/EventHandler');
 
-const server       = dgram.createSocket('udp4');
-const eventHandler = new EventHandler(server);
-
+// TODO: 非Global化
 global.clients = [];
 
 require('./modules/utils/initializer')();
@@ -17,7 +21,7 @@ server.on('listening', () => {
 });
 
 server.on('message', (msg, info) => {
-    eventHandler.switchMessage(msg.toString(), info);
+    EventHandler.switchMessage(msg.toString(), info);
 });
 
 server.on('error', (err) => {

@@ -1,8 +1,5 @@
 const NetworkHandler = require('../utils/NetworkHandler');
 
-require('../utils/initializer')();
-const { MAX_CONNECTIONS } = process.env;
-
 /**
  * マッチング時の処理
  * @param {Object} data
@@ -10,16 +7,6 @@ const { MAX_CONNECTIONS } = process.env;
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    // 満員なら弾く (暫定)
-    if (clients.length >= MAX_CONNECTIONS) {
-        data.Type    = eventType.Error;
-        data.Message = 'サーバーは満員です';
-
-        NetworkHandler.emit(data, sender, server);
-
-        return;
-    }
-
     // UUIDがなければ弾く
     if (!data.Self.Uuid) {
         console.error(`${sender.address}:${sender.port} has no UUID`);

@@ -1,4 +1,5 @@
 const NetworkHandler = require('./utils/NetworkHandler');
+const { server }     = require('../index');
 
 // TODO: 非global化
 global.eventType = {
@@ -20,22 +21,9 @@ const events = {
     onBulletMove : require('./events/onBulletMove'),
     onRoundUpdate: require('./events/onRoundUpdate'),
     onDisconnect : require('./events/onDisconnect')
-}
+};
 
 class EventHandler {
-    /**
-     * @type {module:dgram.Socket}
-     */
-    #server;
-
-    /**
-     *
-     * @param {module:dgram.Socket} server
-     */
-    constructor(server) {
-        this.#server = server;
-    }
-
     /**
      * 受信データの種類ごとに処理をする
      * @param {string} msg 受信データ
@@ -48,7 +36,7 @@ class EventHandler {
         if (!data.Type) {
             console.error('Data has no Type');
 
-            NetworkHandler.emitError(data, sender, this.#server, 'イベントタイプが指定されていません');
+            NetworkHandler.emitError(data, sender, server, 'イベントタイプが指定されていません');
 
             return;
         }
@@ -57,13 +45,13 @@ class EventHandler {
 
         // イベント処理があれば実行
         if (events.hasOwnProperty(eventKey)) {
-            events[eventKey](data, sender, this.#server);
+            events[eventKey](data, sender, server);
         } else {
             console.error(`${data.type} is unknown type`);
 
-            NetworkHandler.emitError(data, sender, this.#server, `イベントタイプ「${data.type}」は存在しないか、処理が割り当てられていません`);
+            NetworkHandler.emitError(data, sender, server, `イベントタイプ「${data.type}」は存在しないか、処理が割り当てられていません`);
         }
     }
 }
 
-module.exports = EventHandler;
+module.exports = new EventHandler();
