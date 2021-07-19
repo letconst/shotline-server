@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const NetworkHandler = require('../utils/NetworkHandler');
 
-require('../utils/initializer')();
+require('../utils/initializer').dotenv();
 const { MAX_CONNECTIONS } = process.env;
 
 /**

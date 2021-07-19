@@ -1,0 +1,21 @@
+{
+  "appenders": {
+    "console": {
+      "type": "console"
+    },
+    "app": {
+      "type": "file",
+      "filename": "logs/system.log"
+    }
+  },
+  "categories": {
+    "default": {
+      "appenders": [
+        "console",
+        "app"
+      ],
+      "level": "all"
+    }
+  },
+  "replaceConsole": false
+}

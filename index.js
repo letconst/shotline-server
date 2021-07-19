@@ -1,23 +1,27 @@
 'use strict';
 
+const initializer = require('./modules/utils/initializer');
+
+initializer.logger();
+
 const dgram  = require('dgram');
 const server = dgram.createSocket('udp4');
 
 module.exports = {
     server: server
-}
+};
 
 const EventHandler = require('./modules/EventHandler');
 
 // TODO: 非Global化
 global.clients = [];
 
-require('./modules/utils/initializer')();
+initializer.dotenv();
 const { PORT } = process.env;
 
 server.on('listening', () => {
     const address = server.address();
-    console.log(`Server listening on ${address.address}:${address.port}`);
+    console.info(`Server listening on ${address.address}:${address.port}`);
 });
 
 server.on('message', (msg, info) => {
