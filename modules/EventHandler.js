@@ -3,15 +3,20 @@ const { server }     = require('../index');
 
 // TODO: 非global化
 global.eventType = {
-    Init      : 'Init',
-    Match     : 'Match',
-    Joined    : 'Joined',
-    PlayerMove: 'PlayerMove',
-    BulletMove: 'BulletMove',
-    Disconnect: 'Disconnect',
-    Refresh   : 'Refresh',
-    Error     : 'Error'
-}
+    Init        : 'Init',
+    Match       : 'Match',
+    Joined      : 'Joined',
+    PlayerMove  : 'PlayerMove',
+    BulletMove  : 'BulletMove',
+    ItemInit    : 'ItemInit',
+    ItemGenerate: 'ItemGenerate',
+    ItemGet     : 'ItemGet',
+    RoundStart  : 'RoundStart',
+    RoundUpdate : 'RoundUpdate',
+    Disconnect  : 'Disconnect',
+    Refresh     : 'Refresh',
+    Error       : 'Error'
+};
 
 const events = {
     onInit       : require('./events/onInit'),
@@ -19,6 +24,9 @@ const events = {
     onJoined     : require('./events/onJoined'),
     onPlayerMove : require('./events/onPlayerMove'),
     onBulletMove : require('./events/onBulletMove'),
+    onItemInit   : require('./events/onItemInit'),
+    onItemGet    : require('./events/onItemGet'),
+    onRoundStart : require('./events/onRoundStart'),
     onRoundUpdate: require('./events/onRoundUpdate'),
     onDisconnect : require('./events/onDisconnect')
 };
@@ -47,9 +55,9 @@ class EventHandler {
         if (events.hasOwnProperty(eventKey)) {
             events[eventKey](data, sender, server);
         } else {
-            console.error(`${data.type} is unknown type`);
+            console.error(`${data.Type} is unknown type`);
 
-            NetworkHandler.emitError(data, sender, server, `イベントタイプ「${data.type}」は存在しないか、処理が割り当てられていません`);
+            NetworkHandler.emitError(data, sender, server, `イベントタイプ「${data.Type}」は存在しないか、処理が割り当てられていません`);
         }
     }
 }

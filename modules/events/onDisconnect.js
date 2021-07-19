@@ -13,7 +13,7 @@ module.exports = (data, sender, server) => {
         if (clients.hasOwnProperty(uuid)) {
             delete clients[uuid];
             clients.length--;
-            console.log(`${sender.address}:${sender.port} is disconnected`);
+            console.info(`${sender.address}:${sender.port} is disconnected`);
         } else {
             console.error(`UUID "${uuid}" isn't exist in connected clients`);
         }
