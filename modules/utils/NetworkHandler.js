@@ -19,6 +19,8 @@ class NetworkHandler {
      * @param {module:dgram.Socket} server
      */
     static broadcast(data, clients, server) {
+        console.info(`Broadcast: ${data.Type}`);
+
         for (const client in clients) {
             this.emit(data, clients[client], server);
         }

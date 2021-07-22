@@ -30,5 +30,5 @@ module.exports = (data, sender, server) => {
         NetworkHandler.broadcast(data, clients, server);
     }
 
-    console.log(`${sender.address}:${sender.port} (${data.Self.Uuid}) joined the room`);
+    console.info(`${sender.address}:${sender.port} (${data.Self.Uuid}) joined the room`);
 }

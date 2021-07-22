@@ -1,4 +1,5 @@
 const NetworkHandler = require('../utils/NetworkHandler');
+const ItemManager    = require('../ItemManager');
 
 /**
  * 切断時の処理
@@ -12,9 +13,14 @@ module.exports = (data, sender, server) => {
 
         if (clients.hasOwnProperty(uuid)) {
             delete clients[uuid];
-            console.log(`${sender.address}:${sender.port} is disconnected`);
+            clients.length--;
+            console.info(`${sender.address}:${sender.port} is disconnected`);
         } else {
             console.error(`UUID "${uuid}" isn't exist in connected clients`);
+        }
+
+        if (clients.length === 0) {
+            ItemManager.reset();
         }
 
         data.Type       = eventType.Refresh;
@@ -24,4 +30,4 @@ module.exports = (data, sender, server) => {
 
         break;
     }
-}
+};
