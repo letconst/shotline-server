@@ -1,4 +1,5 @@
 const NetworkHandler = require('../utils/NetworkHandler');
+const ItemManager    = require('../ItemManager');
 
 /**
  * 切断時の処理
@@ -18,6 +19,10 @@ module.exports = (data, sender, server) => {
             console.error(`UUID "${uuid}" isn't exist in connected clients`);
         }
 
+        if (clients.length === 0) {
+            ItemManager.reset();
+        }
+
         data.Type       = eventType.Refresh;
         data.Rival.Uuid = uuid;
 
@@ -25,4 +30,4 @@ module.exports = (data, sender, server) => {
 
         break;
     }
-}
+};

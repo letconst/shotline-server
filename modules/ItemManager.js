@@ -80,6 +80,14 @@ class ItemManager {
         this.#expected += this.#generateInterval;
         this.#timer = setTimeout(this.step.bind(this), Math.max(0, this.#generateInterval - dt));
     }
+
+    /**
+     * 生成状況をリセットする
+     */
+    reset() {
+        this.stopGenerate();
+        this.generatedCount = 0;
+    }
 }
 
 module.exports = new ItemManager();

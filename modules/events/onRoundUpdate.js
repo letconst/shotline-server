@@ -14,8 +14,7 @@ module.exports = (data, sender, server) => {
     data.Self  = null;
 
     // アイテム生成状況リセット
-    ItemManager.stopGenerate();
-    ItemManager.generatedCount = 0;
+    ItemManager.reset();
 
     NetworkHandler.broadcast(data, clients, server);
 };

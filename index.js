@@ -1,6 +1,6 @@
 'use strict';
 
-const IS_DEBUG = false;
+const IS_DEBUG = true;
 
 const fetch       = require('node-fetch');
 const initializer = require('./modules/utils/initializer');
