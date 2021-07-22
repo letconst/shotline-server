@@ -59,7 +59,7 @@ process
 /**
  * Discordボットのアクティビティへの稼働状況設定用リクエストをPOSTする
  * @param {Object} body activityOptions
- * @return {*|Promise<Response>}
+ * @return {Promise<Response>}
  */
 function postSetActivity(body) {
     return fetch(`${DISCORD_BOT_URL}/setActivity`, {
@@ -69,5 +69,7 @@ function postSetActivity(body) {
             'Content-Type': 'application/json',
         },
         body   : JSON.stringify(body)
+    }).catch(() => {
+        console.error('Fetch failed: Discord bot is offline');
     });
 }

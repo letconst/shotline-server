@@ -11,6 +11,9 @@ global.eventType = {
     ItemInit    : 'ItemInit',
     ItemGenerate: 'ItemGenerate',
     ItemGet     : 'ItemGet',
+    Instantiate : 'Instantiate',
+    Destroy     : 'Destroy',
+    ShieldUpdate: 'ShieldUpdate',
     RoundStart  : 'RoundStart',
     RoundUpdate : 'RoundUpdate',
     Disconnect  : 'Disconnect',
@@ -19,16 +22,19 @@ global.eventType = {
 };
 
 const events = {
-    onInit       : require('./events/onInit'),
-    onMatch      : require('./events/onMatch'),
-    onJoined     : require('./events/onJoined'),
-    onPlayerMove : require('./events/onPlayerMove'),
-    onBulletMove : require('./events/onBulletMove'),
-    onItemInit   : require('./events/onItemInit'),
-    onItemGet    : require('./events/onItemGet'),
-    onRoundStart : require('./events/onRoundStart'),
-    onRoundUpdate: require('./events/onRoundUpdate'),
-    onDisconnect : require('./events/onDisconnect')
+    onInit        : require('./events/onInit'),
+    onMatch       : require('./events/onMatch'),
+    onJoined      : require('./events/onJoined'),
+    onPlayerMove  : require('./events/onPlayerMove'),
+    onBulletMove  : require('./events/onBulletMove'),
+    onItemInit    : require('./events/onItemInit'),
+    onItemGet     : require('./events/onItemGet'),
+    onInstantiate : require('./events/onInstantiate'),
+    onDestroy     : require('./events/onDestroy'),
+    onShieldUpdate: require('./events/onShieldUpdate'),
+    onRoundStart  : require('./events/onRoundStart'),
+    onRoundUpdate : require('./events/onRoundUpdate'),
+    onDisconnect  : require('./events/onDisconnect')
 };
 
 class EventHandler {
