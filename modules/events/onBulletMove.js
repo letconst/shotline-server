@@ -7,8 +7,5 @@ const NetworkHandler = require('../utils/NetworkHandler');
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    data.Rival.bullet = data.Self.bullet;
-    data.Self.bullet  = null;
-
     NetworkHandler.broadcastExceptSelf(data, sender, server, clients);
 }

@@ -10,9 +10,6 @@ const ItemManager    = require('../ItemManager');
 module.exports = (data, sender, server) => {
     console.info('Round ended');
 
-    data.Rival = data.Self;
-    data.Self  = null;
-
     // アイテム生成状況リセット
     ItemManager.reset();
 

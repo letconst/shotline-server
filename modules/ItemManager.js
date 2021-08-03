@@ -70,7 +70,7 @@ class ItemManager {
 
         const data = {
             Type: eventType.ItemGenerate,
-            seed: Math.floor(Date.now() / 1000) // intがオーバーフローするため、秒に丸める
+            Seed: Math.floor(Date.now() / 1000) // intがオーバーフローするため、秒に丸める
         };
 
         NetworkHandler.broadcast(data, clients, server);

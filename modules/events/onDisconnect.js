@@ -9,7 +9,7 @@ const ItemManager    = require('../ItemManager');
  */
 module.exports = (data, sender, server) => {
     for (const uuid in clients) {
-        if (uuid !== data.Self.Uuid) continue;
+        if (uuid !== data.Uuid) continue;
 
         if (clients.hasOwnProperty(uuid)) {
             delete clients[uuid];
@@ -23,10 +23,12 @@ module.exports = (data, sender, server) => {
             ItemManager.reset();
         }
 
-        data.Type       = eventType.Refresh;
-        data.Rival.Uuid = uuid;
+        const newReq = {
+            Type     : eventType.Refresh,
+            RivalUuid: uuid
+        };
 
-        NetworkHandler.broadcast(data, clients, server);
+        NetworkHandler.broadcast(newReq, clients, server);
 
         break;
     }
