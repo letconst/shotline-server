@@ -6,8 +6,29 @@ const { v4: uuidv4 } = require('uuid');
  */
 
 class Client {
-    constructor() {
-        this.uuid = uuidv4();
+    /**
+     * @type {string}
+     */
+    uuid;
+
+    /**
+     * @type {RemoteInfo}
+     */
+    #remoteInfo;
+
+    /**
+     * @param {RemoteInfo} remoteInfo
+     */
+    constructor(remoteInfo) {
+        this.uuid        = uuidv4();
+        this.#remoteInfo = remoteInfo;
+    }
+
+    /**
+     * @return {RemoteInfo}
+     */
+    get remoteInfo() {
+        return this.#remoteInfo;
     }
 }
 

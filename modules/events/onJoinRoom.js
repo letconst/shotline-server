@@ -23,6 +23,7 @@ module.exports = (data, sender, server) => {
             if (room.clientCount < Number(MAX_CONNECTIONS)) {
                 data.IsJoinable = true;
                 data.Client     = RoomManager.joinClientToRoom(room.uuid);
+                data.IsOwner    = room.clientCount === 1;
             } else {
                 data.Message = 'ルームが満員です';
             }

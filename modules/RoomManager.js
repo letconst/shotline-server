@@ -108,14 +108,15 @@ class RoomManager {
     /**
      * 指定のクライアントを参加しているルームから削除する
      * @param {string} clientUuid
+     * @return {boolean} - 削除できたか
      */
     removeClientFromRoom(clientUuid) {
         const joiningRoom = this.getRoomByClient(clientUuid);
 
         // 参加ルームがなければ終了
-        if (!joiningRoom) return;
+        if (!joiningRoom) return false;
 
-        joiningRoom.removeClient(clientUuid);
+        return joiningRoom.removeClient(clientUuid);
     }
 
     #broadcastRemoveRoom(roomUuid) {

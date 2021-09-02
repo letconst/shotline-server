@@ -10,7 +10,6 @@ class Room {
     uuid;
 
     /**
-     * @const
      * @type {Client[]}
      */
     clients;
@@ -53,11 +52,16 @@ class Room {
         return newClient;
     }
 
+    /**
+     * 指定のクライアントをルームから削除する
+     * @param uuid
+     * @return {boolean} - 削除できたか
+     */
     removeClient(uuid) {
         const tmpClients = this.clients.filter(c => c.uuid !== uuid);
 
         //
-        if (this.clients.length === tmpClients.length) return;
+        if (this.clients.length === tmpClients.length) return false;
 
         this.clients = this.clients.filter(c => c.uuid !== uuid);
 
@@ -66,6 +70,8 @@ class Room {
         } else {
             // TODO: ルーム更新ブロードキャスト
         }
+
+        return true;
     }
 
     /**
