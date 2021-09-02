@@ -1,5 +1,6 @@
 const NetworkHandler = require('./utils/NetworkHandler');
 const { server }     = require('../index');
+const { eventType }  = require('./definitions/Definitions');
 
 class ItemManager {
     /**

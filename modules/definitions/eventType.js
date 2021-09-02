@@ -1,0 +1,20 @@
+module.exports = {
+    Init        : 'Init',
+    GetAllRoom  : 'GetAllRoom',
+    JoinRoom    : 'JoinRoom',
+    Match       : 'Match',
+    Joined      : 'Joined',
+    PlayerMove  : 'PlayerMove',
+    BulletMove  : 'BulletMove',
+    ItemInit    : 'ItemInit',
+    ItemGenerate: 'ItemGenerate',
+    ItemGet     : 'ItemGet',
+    Instantiate : 'Instantiate',
+    Destroy     : 'Destroy',
+    ShieldUpdate: 'ShieldUpdate',
+    RoundStart  : 'RoundStart',
+    RoundUpdate : 'RoundUpdate',
+    Disconnect  : 'Disconnect',
+    Refresh     : 'Refresh',
+    Error       : 'Error'
+};
