@@ -11,20 +11,24 @@ const { MAX_CONNECTIONS } = process.env;
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    const room = RoomManager.getRoomByUuid(data.RoomUuid);
-
     data.IsJoinable = false;
-    console.log(room);
 
-    if (room) {
-        if (room.clientCount < Number(MAX_CONNECTIONS)) {
-            data.IsJoinable = true;
-            data.Client     = RoomManager.joinClientToRoom(room.uuid);
-        } else {
-            data.Message = 'ルームが満員です';
-        }
+    // 他のルームに参加済みか確認
+    if (RoomManager.getRoomByClient(data.Client.uuid)) {
+        data.Message = 'すでに他のルームに参加しています';
     } else {
-        data.Message = 'ルームが存在しません';
+        const room = RoomManager.getRoomByUuid(data.RoomUuid);
+
+        if (room) {
+            if (room.clientCount < Number(MAX_CONNECTIONS)) {
+                data.IsJoinable = true;
+                data.Client     = RoomManager.joinClientToRoom(room.uuid);
+            } else {
+                data.Message = 'ルームが満員です';
+            }
+        } else {
+            data.Message = 'ルームが存在しません';
+        }
     }
 
     NetworkHandler.emit(data, sender, server);
