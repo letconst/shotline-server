@@ -1,3 +1,6 @@
+const RoomManager   = require('../RoomManager');
+const { eventType } = require('../definitions/Definitions');
+
 class NetworkHandler {
     /**
      * 指定のクライアントにデータを送信する
@@ -23,6 +26,25 @@ class NetworkHandler {
 
         for (const client in clients) {
             this.emit(data, clients[client], server);
+        }
+    }
+
+    /**
+     * 指定のルームの全クライアントにデータを送信する
+     * @param {Object} data
+     * @param {module:dgram.Socket} server
+     * @param {string} roomUuid
+     */
+    static broadcastToRoom(data, server, roomUuid) {
+        const room = RoomManager.getRoomByUuid(roomUuid);
+
+        if (!room) {
+            console.warn(`Broadcast: Room ${roomUuid} not found`);
+            return;
+        }
+
+        for (let client of room.clients) {
+            NetworkHandler.emit(data, client.remoteInfo, server);
         }
     }
 
