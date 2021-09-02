@@ -66,7 +66,7 @@ class Room {
         this.clients = this.clients.filter(c => c.uuid !== uuid);
 
         if (this.clientCount === 0) {
-            RoomManager.removeRoom(this.uuid);
+            RoomManager.removeRoomByUuid(this.uuid);
         } else {
             // TODO: ルーム更新ブロードキャスト
         }

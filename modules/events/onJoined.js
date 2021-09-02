@@ -1,4 +1,5 @@
 const NetworkHandler = require('../utils/NetworkHandler');
+const RoomManager    = require('../RoomManager');
 
 require('../utils/initializer').dotenv();
 const { MAX_CONNECTIONS } = process.env;
@@ -10,23 +11,20 @@ const { MAX_CONNECTIONS } = process.env;
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    let joinedCount = 0;
+    const { RoomUuid, ClientUuid } = data;
 
-    for (const uuid in clients) {
-        if (data.Uuid !== uuid) continue;
+    const room = RoomManager.getRoomByUuid(RoomUuid);
 
-        clients[uuid].isJoined = true;
-
-        break;
-    }
+    // readyフラグ設定
+    const client       = room.clients.find(c => ClientUuid === c.uuid);
+    client.isRoomReady = true;
 
     // ステージに遷移済みのプレイヤーをカウント
-    for (const uuid in clients) {
-        if (clients[uuid].isJoined) joinedCount++;
-    }
+    const joinedCount = room.clients.filter(c => c.isRoomReady).length;
 
     // 全プレイヤーが遷移してたらゲーム開始
     if (joinedCount === Number(MAX_CONNECTIONS)) {
-        NetworkHandler.broadcast(data, clients, server);
+        data.ClientUuid = '';
+        NetworkHandler.broadcastToRoom(data, server, room);
     }
 };

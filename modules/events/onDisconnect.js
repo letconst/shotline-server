@@ -23,5 +23,5 @@ module.exports = (data, sender, server) => {
         RivalUuid: ClientUuid
     };
 
-    NetworkHandler.broadcastToRoom(newReq, server, RoomUuid);
+    NetworkHandler.broadcastToRoomByUuid(newReq, server, RoomUuid);
 };

@@ -12,6 +12,11 @@ class Client {
     uuid;
 
     /**
+     * @type {boolean}
+     */
+    isRoomReady;
+
+    /**
      * @type {RemoteInfo}
      */
     #remoteInfo;

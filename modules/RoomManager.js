@@ -43,17 +43,17 @@ class RoomManager {
     }
 
     /**
-     * ルームを破棄する
+     * 指定のUUIDのルームを破棄する
      * @param {string} uuid
      */
-    removeRoom(uuid) {
+    removeRoomByUuid(uuid) {
         const tmpRooms = this.#rooms.filter(r => r.uuid !== uuid);
 
         // 一致するUUIDのルームがなければ終了
         if (this.#rooms.length === tmpRooms.length) return;
 
         // 現在のルーム数が最小数なら不足となる分を作成
-        if (this.#rooms.length === MIN_ROOM_COUNT) {
+        if (this.#rooms.length === Number(MIN_ROOM_COUNT)) {
             tmpRooms.push(new Room());
         }
 
@@ -66,13 +66,9 @@ class RoomManager {
      * @return {Room|null}
      */
     getRoomByUuid(uuid) {
-        const room = this.#rooms.filter(r => r.uuid === uuid);
+        const room = this.#rooms.find(r => r.uuid === uuid);
 
-        if (room.length === 0) {
-            return null;
-        } else {
-            return room[0];
-        }
+        return room || null;
     }
 
     /**
@@ -82,12 +78,9 @@ class RoomManager {
      * @return {Room|null}
      */
     getRoomByClient(clientUuid) {
-        const joiningRoom = this.#rooms.filter(r => r.getClientByUuid(clientUuid) !== null);
+        const joiningRoom = this.#rooms.find(r => r.getClientByUuid(clientUuid) !== null);
 
-        // クライアントの参加ルームがなければnullを返す
-        if (joiningRoom.length === 0) return null;
-
-        return joiningRoom[0];
+        return joiningRoom || null;
     }
 
     /**
@@ -97,12 +90,12 @@ class RoomManager {
      * @return {Client|null}
      */
     joinClientToRoom(roomUuid) {
-        const targetRoom = this.#rooms.filter(r => r.uuid === roomUuid);
+        const targetRoom = this.#rooms.find(r => r.uuid === roomUuid);
 
         // 指定のルームがなければnullを返す
-        if (targetRoom.length === 0) return null;
+        if (!targetRoom) return null;
 
-        return targetRoom[0].addNewClient();
+        return targetRoom.addNewClient();
     }
 
     /**

@@ -30,12 +30,24 @@ class NetworkHandler {
     }
 
     /**
-     * 指定のルームの全クライアントにデータを送信する
+     * 指定のルームに参加している全クライアントにデータを送信する
+     * @param {Object} data
+     * @param {module:dgram.Socket} server
+     * @param {Room} room
+     */
+    static broadcastToRoom(data, server, room) {
+        for (let client of room.clients) {
+            this.emit(data, client.remoteInfo, server);
+        }
+    }
+
+    /**
+     * 指定のUUIDルームに参加している全クライアントにデータを送信する
      * @param {Object} data
      * @param {module:dgram.Socket} server
      * @param {string} roomUuid
      */
-    static broadcastToRoom(data, server, roomUuid) {
+    static broadcastToRoomByUuid(data, server, roomUuid) {
         const room = RoomManager.getRoomByUuid(roomUuid);
 
         if (!room) {
@@ -43,9 +55,7 @@ class NetworkHandler {
             return;
         }
 
-        for (let client of room.clients) {
-            NetworkHandler.emit(data, client.remoteInfo, server);
-        }
+        this.broadcastToRoom(data, server, room);
     }
 
     /**
@@ -62,6 +72,42 @@ class NetworkHandler {
 
             this.emit(data, clients[uuid], server);
         }
+    }
+
+    /**
+     * 指定のルームの自分 (sender) 以外の全クライアントにデータを送信する
+     * @param {Object} data 送信データ
+     * @param {RemoteInfo} sender 自身のクライアント
+     * @param {module:dgram.Socket} server
+     * @param {Room} room
+     */
+    static broadcastExceptSelfToRoom(data, sender, server, room) {
+        for (let client of room.clients) {
+            const {address: cAddress, port: cPort} = client.remoteInfo;
+            const {address: sAddress, port: sPort} = sender;
+
+            if (cAddress === sAddress && cPort === sPort) continue;
+
+            this.emit(data, client.remoteInfo, server);
+        }
+    }
+
+    /**
+     * 指定のUUIDルームの自分 (sender) 以外の全クライアントにデータを送信する
+     * @param {Object} data 送信データ
+     * @param {RemoteInfo} sender 自身のクライアント
+     * @param {module:dgram.Socket} server
+     * @param {string} roomUuid
+     */
+    static broadcastExceptSelfToRoomByUuid(data, sender, server, roomUuid) {
+        const room = RoomManager.getRoomByUuid(roomUuid);
+
+        if (!room) {
+            console.warn(`Broadcast: Room ${roomUuid} not found`);
+            return;
+        }
+
+        this.broadcastExceptSelfToRoom(data, sender, server, room);
     }
 
     /**
