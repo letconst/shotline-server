@@ -1,5 +1,5 @@
 const NetworkHandler = require('../utils/NetworkHandler');
-const ItemManager    = require('../ItemManager');
+const RoomManager    = require('../RoomManager');
 
 /**
  * ラウンド進行時の処理
@@ -8,10 +8,11 @@ const ItemManager    = require('../ItemManager');
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    console.info('Round ended');
+    const room = RoomManager.getRoomByUuid(data.RoomUuid);
 
     // アイテム生成状況リセット
-    ItemManager.reset();
+    room.itemManager.reset();
+    NetworkHandler.broadcastToRoom(data, server, room);
 
-    NetworkHandler.broadcast(data, clients, server);
+    console.info('Round ended');
 };

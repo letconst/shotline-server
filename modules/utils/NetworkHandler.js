@@ -16,26 +16,14 @@ class NetworkHandler {
     }
 
     /**
-     * 全クライアントにデータを送信する
-     * @param {Object} data 送信データ
-     * @param {RemoteInfo[]} clients 送信先のクライアント
-     * @param {module:dgram.Socket} server
-     */
-    static broadcast(data, clients, server) {
-        console.info(`Broadcast: ${data.Type}`);
-
-        for (const client in clients) {
-            this.emit(data, clients[client], server);
-        }
-    }
-
-    /**
      * 指定のルームに参加している全クライアントにデータを送信する
      * @param {Object} data
      * @param {module:dgram.Socket} server
      * @param {Room} room
      */
     static broadcastToRoom(data, server, room) {
+        data.ClientUuid = '';
+
         for (let client of room.clients) {
             this.emit(data, client.remoteInfo, server);
         }
@@ -59,22 +47,6 @@ class NetworkHandler {
     }
 
     /**
-     * 自分 (sender) 以外の全クライアントにデータを送信する
-     * @param {Object} data 送信データ
-     * @param {RemoteInfo} sender 自身のクライアント
-     * @param {module:dgram.Socket} server
-     * @param {RemoteInfo[]} clients 送信祭のクライアント
-     */
-    static broadcastExceptSelf(data, sender, server, clients) {
-        for (const uuid in clients) {
-            if (clients[uuid].address === sender.address &&
-                clients[uuid].port === sender.port) continue;
-
-            this.emit(data, clients[uuid], server);
-        }
-    }
-
-    /**
      * 指定のルームの自分 (sender) 以外の全クライアントにデータを送信する
      * @param {Object} data 送信データ
      * @param {RemoteInfo} sender 自身のクライアント
@@ -82,6 +54,8 @@ class NetworkHandler {
      * @param {Room} room
      */
     static broadcastExceptSelfToRoom(data, sender, server, room) {
+        data.ClientUuid = '';
+
         for (let client of room.clients) {
             const {address: cAddress, port: cPort} = client.remoteInfo;
             const {address: sAddress, port: sPort} = sender;

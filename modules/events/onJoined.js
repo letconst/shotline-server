@@ -24,7 +24,6 @@ module.exports = (data, sender, server) => {
 
     // 全プレイヤーが遷移してたらゲーム開始
     if (joinedCount === Number(MAX_CONNECTIONS)) {
-        data.ClientUuid = '';
         NetworkHandler.broadcastToRoom(data, server, room);
     }
 };

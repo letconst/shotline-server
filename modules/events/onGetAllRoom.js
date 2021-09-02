@@ -8,7 +8,7 @@ const RoomManager    = require('../RoomManager');
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    data['Rooms'] = RoomManager.allRooms;
+    data.Rooms = RoomManager.allRooms;
 
     NetworkHandler.emit(data, sender, server);
 };

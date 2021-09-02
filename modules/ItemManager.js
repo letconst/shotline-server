@@ -18,7 +18,16 @@ class ItemManager {
      */
     #isGenerating;
 
-    constructor() {
+    /**
+     * このインスタンスが保持されているルーム
+     * @type {Room}
+     */
+    #room;
+
+    /**
+     * @param {Room} room
+     */
+    constructor(room) {
         /**
          * 現在生成されているアイテムの個数
          * @type {number}
@@ -30,6 +39,8 @@ class ItemManager {
          * @type {number}
          */
         this.maxGenerateCount = 0;
+
+        this.#room = room;
     }
 
     set generateInterval(interval) {
@@ -74,7 +85,7 @@ class ItemManager {
             Seed: Math.floor(Date.now() / 1000) // intがオーバーフローするため、秒に丸める
         };
 
-        NetworkHandler.broadcast(data, clients, server);
+        NetworkHandler.broadcastToRoom(data, server, this.#room);
 
         this.generatedCount++;
 
@@ -91,4 +102,4 @@ class ItemManager {
     }
 }
 
-module.exports = new ItemManager();
+module.exports = ItemManager;

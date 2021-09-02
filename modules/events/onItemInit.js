@@ -1,4 +1,4 @@
-const ItemManager = require('../ItemManager');
+const RoomManager = require('../RoomManager');
 
 /**
  * クライアントからのアイテム情報初期化時の処理
@@ -7,6 +7,8 @@ const ItemManager = require('../ItemManager');
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    ItemManager.maxGenerateCount = data.MaxItemGenerateCount;
-    ItemManager.generateInterval = data.ItemGenerateInterval;
+    const room = RoomManager.getRoomByUuid(data.RoomUuid);
+
+    room.itemManager.maxGenerateCount = data.MaxItemGenerateCount;
+    room.itemManager.generateInterval = data.ItemGenerateInterval;
 };

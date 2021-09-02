@@ -1,13 +1,14 @@
-const ItemManager = require('../ItemManager');
+const RoomManager = require('../RoomManager');
 
 /**
  * ラウンド開始時の処理
- * @param _
+ * @param {Object} data
  * @param __
  * @param ___
  */
-module.exports = (_, __, ___) => {
-    console.info('Round started');
+module.exports = (data, __, ___) => {
+    const room = RoomManager.getRoomByUuid(data.RoomUuid);
+    room.itemManager.startGenerate();
 
-    ItemManager.startGenerate();
+    console.info('Round started');
 };

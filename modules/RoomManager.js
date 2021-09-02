@@ -53,7 +53,7 @@ class RoomManager {
         if (this.#rooms.length === tmpRooms.length) return;
 
         // 現在のルーム数が最小数なら不足となる分を作成
-        if (this.#rooms.length === Number(MIN_ROOM_COUNT)) {
+        if (this.#rooms.length === MIN_ROOM_COUNT) {
             tmpRooms.push(new Room());
         }
 

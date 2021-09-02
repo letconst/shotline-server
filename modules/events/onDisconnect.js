@@ -16,12 +16,14 @@ module.exports = (data, sender, server) => {
     if (!RoomManager.removeClientFromRoom(ClientUuid)) return;
 
     console.info(`${sender.address}:${sender.port} is disconnected`);
-    ItemManager.reset();
+
+    const room = RoomManager.getRoomByUuid(RoomUuid);
+    room.itemManager.reset();
 
     const newReq = {
         Type     : eventType.Refresh,
         RivalUuid: ClientUuid
     };
 
-    NetworkHandler.broadcastToRoomByUuid(newReq, server, RoomUuid);
+    NetworkHandler.broadcastToRoom(newReq, server, room);
 };
