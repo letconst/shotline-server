@@ -1,5 +1,4 @@
 const { v4: uuidv4 } = require('uuid');
-const RoomManager    = require('./RoomManager');
 const Client         = require('./Client');
 const ItemManager    = require('./ItemManager');
 
@@ -26,6 +25,11 @@ class Room {
      */
     itemManager;
 
+    /**
+     * @type {RoomManager}
+     */
+    #roomManager;
+
     constructor() {
         this.uuid        = uuidv4();
         this.clients     = [];
@@ -41,6 +45,18 @@ class Room {
     }
 
     /**
+     * RoomManagerインスタンス。依存関係の問題でゲッターとしている。
+     * @return {RoomManager}
+     */
+    get roomManager() {
+        if (!this.#roomManager || !Object.keys(this.#roomManager).length) {
+            this.#roomManager = require('./RoomManager');
+        }
+
+        return this.#roomManager;
+    }
+
+    /**
      * 指定のクライアントをルームに追加する
      * @param {Client} client - 追加させるクライアント
      */
@@ -51,9 +67,10 @@ class Room {
     /**
      * ルームにクライアントを新規追加する
      * @return {Client} - 新規クライアント
+     * @param {RemoteInfo} remoteInfo
      */
-    addNewClient() {
-        const newClient = new Client();
+    addNewClient(remoteInfo) {
+        const newClient = new Client(remoteInfo);
         this.addClient(newClient);
 
         return newClient;
@@ -73,7 +90,7 @@ class Room {
         this.clients = this.clients.filter(c => c.uuid !== uuid);
 
         if (this.clientCount === 0) {
-            RoomManager.removeRoomByUuid(this.uuid);
+            this.roomManager.removeRoomByUuid(this.uuid);
         } else {
             // TODO: ルーム更新ブロードキャスト
         }

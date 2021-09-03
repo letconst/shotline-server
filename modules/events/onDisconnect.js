@@ -1,5 +1,4 @@
 const NetworkHandler = require('../utils/NetworkHandler');
-const ItemManager    = require('../ItemManager');
 const RoomManager    = require('../RoomManager');
 const { eventType }  = require('../definitions/Definitions');
 
@@ -18,6 +17,9 @@ module.exports = (data, sender, server) => {
     console.info(`${sender.address}:${sender.port} is disconnected`);
 
     const room = RoomManager.getRoomByUuid(RoomUuid);
+
+    if (!room) return;
+
     room.itemManager.reset();
 
     const newReq = {

@@ -1,6 +1,6 @@
-const NetworkHandler = require('./utils/NetworkHandler');
-const { server }     = require('../index');
-const { eventType }  = require('./definitions/Definitions');
+let NetworkHandler  = require('./utils/NetworkHandler');
+const { server }    = require('../index');
+const { eventType } = require('./definitions/Definitions');
 
 class ItemManager {
     /**
@@ -25,22 +25,24 @@ class ItemManager {
     #room;
 
     /**
+     * 現在生成されているアイテムの個数
+     * @type {number}
+     */
+    generatedCount;
+
+    /**
+     * 生成する最大個数。ホストとの接続時に数値をもらう。
+     * @type {number}
+     */
+    maxGenerateCount;
+
+    /**
      * @param {Room} room
      */
     constructor(room) {
-        /**
-         * 現在生成されているアイテムの個数
-         * @type {number}
-         */
-        this.generatedCount = 0;
-
-        /**
-         * 生成する最大個数。ホストとの接続時に数値をもらう。
-         * @type {number}
-         */
-        this.maxGenerateCount = 0;
-
-        this.#room = room;
+        this.#room            = room;
+        this.generatedCount   = 0;
+        this.generateInterval = 0;
     }
 
     set generateInterval(interval) {
@@ -84,6 +86,10 @@ class ItemManager {
             Type: eventType.ItemGenerate,
             Seed: Math.floor(Date.now() / 1000) // intがオーバーフローするため、秒に丸める
         };
+
+        if (!Object.keys(NetworkHandler).length) {
+            NetworkHandler = require('./utils/NetworkHandler');
+        }
 
         NetworkHandler.broadcastToRoom(data, server, this.#room);
 

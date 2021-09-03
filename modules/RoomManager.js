@@ -86,16 +86,17 @@ class RoomManager {
     /**
      * 指定のルームにクライアントを参加させる
      * ルームが存在しなければnullが返る
-     * @param roomUuid
+     * @param {string} roomUuid
+     * @param {RemoteInfo} remoteInfo
      * @return {Client|null}
      */
-    joinClientToRoom(roomUuid) {
+    joinClientToRoom(roomUuid, remoteInfo) {
         const targetRoom = this.#rooms.find(r => r.uuid === roomUuid);
 
         // 指定のルームがなければnullを返す
         if (!targetRoom) return null;
 
-        return targetRoom.addNewClient();
+        return targetRoom.addNewClient(remoteInfo);
     }
 
     /**
