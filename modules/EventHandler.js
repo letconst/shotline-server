@@ -1,28 +1,10 @@
 const NetworkHandler = require('./utils/NetworkHandler');
 const { server }     = require('../index');
 
-// TODO: 非global化
-global.eventType = {
-    Init        : 'Init',
-    Match       : 'Match',
-    Joined      : 'Joined',
-    PlayerMove  : 'PlayerMove',
-    BulletMove  : 'BulletMove',
-    ItemInit    : 'ItemInit',
-    ItemGenerate: 'ItemGenerate',
-    ItemGet     : 'ItemGet',
-    Instantiate : 'Instantiate',
-    Destroy     : 'Destroy',
-    ShieldUpdate: 'ShieldUpdate',
-    RoundStart  : 'RoundStart',
-    RoundUpdate : 'RoundUpdate',
-    Disconnect  : 'Disconnect',
-    Refresh     : 'Refresh',
-    Error       : 'Error'
-};
-
 const events = {
     onInit        : require('./events/onInit'),
+    onGetAllRoom  : require('./events/onGetAllRoom'),
+    onJoinRoom    : require('./events/onJoinRoom'),
     onMatch       : require('./events/onMatch'),
     onJoined      : require('./events/onJoined'),
     onPlayerMove  : require('./events/onPlayerMove'),

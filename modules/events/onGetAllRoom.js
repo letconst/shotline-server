@@ -1,11 +1,14 @@
 const NetworkHandler = require('../utils/NetworkHandler');
+const RoomManager    = require('../RoomManager');
 
 /**
- * プレイヤー移動時の処理
+ * 全ルーム取得時の処理
  * @param {Object} data
  * @param {RemoteInfo} sender
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    NetworkHandler.broadcastExceptSelfToRoomByUuid(data, sender, server, data.RoomUuid);
+    data.Rooms = RoomManager.allRooms;
+
+    NetworkHandler.emit(data, sender, server);
 };

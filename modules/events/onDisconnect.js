@@ -1,5 +1,6 @@
 const NetworkHandler = require('../utils/NetworkHandler');
-const ItemManager    = require('../ItemManager');
+const RoomManager    = require('../RoomManager');
+const { eventType }  = require('../definitions/Definitions');
 
 /**
  * 切断時の処理
@@ -8,28 +9,23 @@ const ItemManager    = require('../ItemManager');
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    for (const uuid in clients) {
-        if (uuid !== data.Uuid) continue;
+    const { RoomUuid, ClientUuid } = data;
 
-        if (clients.hasOwnProperty(uuid)) {
-            delete clients[uuid];
-            clients.length--;
-            console.info(`${sender.address}:${sender.port} is disconnected`);
-        } else {
-            console.error(`UUID "${uuid}" isn't exist in connected clients`);
-        }
+    // 参加ルームからは削除
+    if (!RoomManager.removeClientFromRoom(ClientUuid)) return;
 
-        if (clients.length === 0) {
-            ItemManager.reset();
-        }
+    console.info(`${sender.address}:${sender.port} is disconnected`);
 
-        const newReq = {
-            Type     : eventType.Refresh,
-            RivalUuid: uuid
-        };
+    const room = RoomManager.getRoomByUuid(RoomUuid);
 
-        NetworkHandler.broadcast(newReq, clients, server);
+    if (!room) return;
 
-        break;
-    }
+    room.itemManager.reset();
+
+    const newReq = {
+        Type     : eventType.Refresh,
+        RivalUuid: ClientUuid
+    };
+
+    NetworkHandler.broadcastToRoom(newReq, server, room);
 };

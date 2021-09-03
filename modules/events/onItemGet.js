@@ -1,5 +1,5 @@
 const NetworkHandler = require('../utils/NetworkHandler');
-const ItemManager    = require('../ItemManager');
+const RoomManager    = require('../RoomManager');
 
 /**
  * クライアントのアイテム取得時の処理
@@ -8,7 +8,9 @@ const ItemManager    = require('../ItemManager');
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    NetworkHandler.broadcastExceptSelf(data, sender, server, clients);
-    ItemManager.generatedCount--;
-    ItemManager.startGenerate();
+    const room = RoomManager.getRoomByUuid(data.RoomUuid);
+    room.itemManager.generatedCount--;
+    room.itemManager.startGenerate();
+
+    NetworkHandler.broadcastExceptSelfToRoom(data, sender, server, room);
 };

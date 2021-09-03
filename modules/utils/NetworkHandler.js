@@ -1,3 +1,6 @@
+const RoomManager   = require('../RoomManager');
+const { eventType } = require('../definitions/Definitions');
+
 class NetworkHandler {
     /**
      * 指定のクライアントにデータを送信する
@@ -13,33 +16,72 @@ class NetworkHandler {
     }
 
     /**
-     * 全クライアントにデータを送信する
-     * @param {Object} data 送信データ
-     * @param {RemoteInfo[]} clients 送信先のクライアント
+     * 指定のルームに参加している全クライアントにデータを送信する
+     * @param {Object} data
      * @param {module:dgram.Socket} server
+     * @param {Room} room
      */
-    static broadcast(data, clients, server) {
-        console.info(`Broadcast: ${data.Type}`);
+    static broadcastToRoom(data, server, room) {
+        data.ClientUuid = '';
 
-        for (const client in clients) {
-            this.emit(data, clients[client], server);
+        for (let client of room.clients) {
+            this.emit(data, client.remoteInfo, server);
         }
     }
 
     /**
-     * 自分 (sender) 以外の全クライアントにデータを送信する
+     * 指定のUUIDルームに参加している全クライアントにデータを送信する
+     * @param {Object} data
+     * @param {module:dgram.Socket} server
+     * @param {string} roomUuid
+     */
+    static broadcastToRoomByUuid(data, server, roomUuid) {
+        const room = RoomManager.getRoomByUuid(roomUuid);
+
+        if (!room) {
+            console.warn(`Broadcast: Room ${roomUuid} not found`);
+            return;
+        }
+
+        this.broadcastToRoom(data, server, room);
+    }
+
+    /**
+     * 指定のルームの自分 (sender) 以外の全クライアントにデータを送信する
      * @param {Object} data 送信データ
      * @param {RemoteInfo} sender 自身のクライアント
      * @param {module:dgram.Socket} server
-     * @param {RemoteInfo[]} clients 送信祭のクライアント
+     * @param {Room} room
      */
-    static broadcastExceptSelf(data, sender, server, clients) {
-        for (const uuid in clients) {
-            if (clients[uuid].address === sender.address &&
-                clients[uuid].port === sender.port) continue;
+    static broadcastExceptSelfToRoom(data, sender, server, room) {
+        data.ClientUuid = '';
 
-            this.emit(data, clients[uuid], server);
+        for (let client of room.clients) {
+            const {address: cAddress, port: cPort} = client.remoteInfo;
+            const {address: sAddress, port: sPort} = sender;
+
+            if (cAddress === sAddress && cPort === sPort) continue;
+
+            this.emit(data, client.remoteInfo, server);
         }
+    }
+
+    /**
+     * 指定のUUIDルームの自分 (sender) 以外の全クライアントにデータを送信する
+     * @param {Object} data 送信データ
+     * @param {RemoteInfo} sender 自身のクライアント
+     * @param {module:dgram.Socket} server
+     * @param {string} roomUuid
+     */
+    static broadcastExceptSelfToRoomByUuid(data, sender, server, roomUuid) {
+        const room = RoomManager.getRoomByUuid(roomUuid);
+
+        if (!room) {
+            console.warn(`Broadcast: Room ${roomUuid} not found`);
+            return;
+        }
+
+        this.broadcastExceptSelfToRoom(data, sender, server, room);
     }
 
     /**

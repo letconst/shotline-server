@@ -7,5 +7,5 @@ const NetworkHandler = require('../utils/NetworkHandler');
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    NetworkHandler.broadcastExceptSelf(data, sender, server, clients);
+    NetworkHandler.broadcastExceptSelfToRoomByUuid(data, sender, server, data.RoomUuid);
 };
