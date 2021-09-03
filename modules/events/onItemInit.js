@@ -7,6 +7,6 @@ const ItemManager = require('../ItemManager');
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    ItemManager.maxGenerateCount = data.maxItemGenerateCount;
-    ItemManager.generateInterval = data.itemGenerateInterval;
+    ItemManager.maxGenerateCount = data.MaxItemGenerateCount;
+    ItemManager.generateInterval = data.ItemGenerateInterval;
 };

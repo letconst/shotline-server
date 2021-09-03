@@ -8,9 +8,6 @@ const ItemManager    = require('../ItemManager');
  * @param {module:dgram.Socket} server
  */
 module.exports = (data, sender, server) => {
-    data.Rival = data.Self;
-    data.Self  = null;
-
     NetworkHandler.broadcastExceptSelf(data, sender, server, clients);
     ItemManager.generatedCount--;
     ItemManager.startGenerate();

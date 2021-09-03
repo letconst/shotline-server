@@ -17,6 +17,9 @@ module.exports = {
 const EventHandler = require('./modules/EventHandler');
 
 // TODO: 非Global化
+/**
+ * @type {RemoteInfo[]}
+ */
 global.clients = [];
 
 initializer.dotenv();

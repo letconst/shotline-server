@@ -13,7 +13,7 @@ module.exports = (data, sender, server) => {
     let joinedCount = 0;
 
     for (const uuid in clients) {
-        if (data.Self.Uuid !== uuid) continue;
+        if (data.Uuid !== uuid) continue;
 
         clients[uuid].isJoined = true;
 

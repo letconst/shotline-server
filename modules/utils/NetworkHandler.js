@@ -44,16 +44,17 @@ class NetworkHandler {
 
     /**
      * 指定のクライアントにエラーデータを送信する
-     * @param {Object} data
      * @param {RemoteInfo} sender
      * @param {module:dgram.Socket} server
      * @param {string} message
      */
-    static emitError(data, sender, server, message) {
-        data.Type    = eventType.Error;
-        data.Message = message;
+    static emitError(sender, server, message) {
+        const req = {
+            Type   : eventType.Error,
+            Message: message
+        };
 
-        this.emit(data, sender, server);
+        this.emit(req, sender, server);
     }
 }
 

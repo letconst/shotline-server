@@ -50,7 +50,7 @@ class EventHandler {
         if (!data.Type) {
             console.error('Data has no Type');
 
-            NetworkHandler.emitError(data, sender, server, 'イベントタイプが指定されていません');
+            NetworkHandler.emitError(sender, server, 'イベントタイプが指定されていません');
 
             return;
         }
@@ -61,9 +61,9 @@ class EventHandler {
         if (events.hasOwnProperty(eventKey)) {
             events[eventKey](data, sender, server);
         } else {
-            console.error(`${data.Type} is unknown type`);
+            console.error(`${data.type} is unknown type`);
 
-            NetworkHandler.emitError(data, sender, server, `イベントタイプ「${data.Type}」は存在しないか、処理が割り当てられていません`);
+            NetworkHandler.emitError(sender, server, `イベントタイプ「${data.Type}」は存在しないか、処理が割り当てられていません`);
         }
     }
 }

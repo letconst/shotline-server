@@ -13,21 +13,18 @@ const { MAX_CONNECTIONS } = process.env;
 module.exports = (data, sender, server) => {
     // 満員なら弾く (暫定)
     if (clients.length >= Number(MAX_CONNECTIONS)) {
-        data.Type    = eventType.Error;
-        data.Message = 'サーバーは満員です';
-
-        NetworkHandler.emit(data, sender, server);
+        NetworkHandler.emitError(sender, server, 'サーバーは満員です');
 
         return;
     }
 
     const thisPlayerUuid = uuidv4();
 
-    data.Self.Uuid          = thisPlayerUuid;
+    data.Uuid               = thisPlayerUuid;
     clients[thisPlayerUuid] = sender;
 
     // 配列のプロパティとして追加しているため、長さを手動で++（暫定）
     clients.length++;
 
     NetworkHandler.emit(data, sender, server);
-}
+};
