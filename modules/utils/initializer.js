@@ -1,5 +1,8 @@
+const path   = require('path');
 const log4js = require('log4js');
-log4js.configure('config/log4js.config.json');
+
+const configPath = path.resolve(`${__dirname}/../../config/log4js.config.json`);
+log4js.configure(configPath);
 
 module.exports = {
     dotenv: () => {
