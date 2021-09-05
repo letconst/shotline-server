@@ -48,7 +48,7 @@ server.on('close', () => {
     process.exit(0);
 });
 
-server.bind(PORT);
+server.bind(Number(PORT));
 
 // 終了時にDiscordボットのステータス解除
 process

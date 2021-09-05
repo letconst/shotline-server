@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# IDE FTP server setting files
+.idea/deployment.xml
+.idea/webServers.xml
