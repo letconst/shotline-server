@@ -5,6 +5,7 @@ const events = {
     onInit        : require('./events/onInit'),
     onGetAllRoom  : require('./events/onGetAllRoom'),
     onJoinRoom    : require('./events/onJoinRoom'),
+    onExitRoom    : require('./events/onExitRoom'),
     onMatch       : require('./events/onMatch'),
     onJoined      : require('./events/onJoined'),
     onPlayerMove  : require('./events/onPlayerMove'),
