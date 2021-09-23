@@ -2,23 +2,24 @@ const NetworkHandler = require('./utils/NetworkHandler');
 const { server }     = require('../index');
 
 const events = {
-    onInit        : require('./events/onInit'),
-    onGetAllRoom  : require('./events/onGetAllRoom'),
-    onJoinRoom    : require('./events/onJoinRoom'),
-    onExitRoom    : require('./events/onExitRoom'),
-    onEnterRoom   : require('./events/onEnterRoom'),
-    onMatch       : require('./events/onMatch'),
-    onJoined      : require('./events/onJoined'),
-    onPlayerMove  : require('./events/onPlayerMove'),
-    onBulletMove  : require('./events/onBulletMove'),
-    onItemInit    : require('./events/onItemInit'),
-    onItemGet     : require('./events/onItemGet'),
-    onInstantiate : require('./events/onInstantiate'),
-    onDestroy     : require('./events/onDestroy'),
-    onShieldUpdate: require('./events/onShieldUpdate'),
-    onRoundStart  : require('./events/onRoundStart'),
-    onRoundUpdate : require('./events/onRoundUpdate'),
-    onDisconnect  : require('./events/onDisconnect')
+    onInit          : require('./events/onInit'),
+    onGetAllRoom    : require('./events/onGetAllRoom'),
+    onJoinRoom      : require('./events/onJoinRoom'),
+    onExitRoom      : require('./events/onExitRoom'),
+    onEnterRoom     : require('./events/onEnterRoom'),
+    onWeaponSelected: require('./events/onWeaponSelected'),
+    onMatch         : require('./events/onMatch'),
+    onJoined        : require('./events/onJoined'),
+    onPlayerMove    : require('./events/onPlayerMove'),
+    onBulletMove    : require('./events/onBulletMove'),
+    onItemInit      : require('./events/onItemInit'),
+    onItemGet       : require('./events/onItemGet'),
+    onInstantiate   : require('./events/onInstantiate'),
+    onDestroy       : require('./events/onDestroy'),
+    onShieldUpdate  : require('./events/onShieldUpdate'),
+    onRoundStart    : require('./events/onRoundStart'),
+    onRoundUpdate   : require('./events/onRoundUpdate'),
+    onDisconnect    : require('./events/onDisconnect')
 };
 
 class EventHandler {
