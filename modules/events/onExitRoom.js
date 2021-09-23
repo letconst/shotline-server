@@ -7,7 +7,7 @@ const RoomManager    = require('../RoomManager');
  * @param {RemoteInfo} sender
  * @param {module:dgram.Socket} server
  */
-module.exports = async (data, sender, server) => {
+module.exports = (data, sender, server) => {
     const room = RoomManager.getRoomByUuid(data.RoomUuid);
 
     // ルームがなければ通知
@@ -31,6 +31,7 @@ module.exports = async (data, sender, server) => {
     }
 
     data.IsExitable = true;
+    room.weaponSelector--;
 
     room.removeClient(data.ClientUuid);
 
