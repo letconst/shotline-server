@@ -21,12 +21,6 @@ class Room {
     isInBattle;
 
     /**
-     * 武器選択をしている人数
-     * @type {Number}
-     */
-    weaponSelector;
-
-    /**
      * @type {ItemManager}
      */
     itemManager;
@@ -37,11 +31,10 @@ class Room {
     #roomManager;
 
     constructor() {
-        this.uuid           = uuidv4();
-        this.clients        = [];
-        this.isInBattle     = false;
-        this.weaponSelector = 0;
-        this.itemManager    = new ItemManager(this);
+        this.uuid        = uuidv4();
+        this.clients     = [];
+        this.isInBattle  = false;
+        this.itemManager = new ItemManager(this);
     }
 
     /**

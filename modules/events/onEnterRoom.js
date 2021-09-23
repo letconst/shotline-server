@@ -12,12 +12,18 @@ const { MAX_CONNECTIONS } = process.env;
  */
 module.exports = async (data, sender, server) => {
     const room = RoomManager.getRoomByUuid(data.RoomUuid);
-    room.weaponSelector++;
+
+    // 入室フラグ設定
+    const client         = room.clients.find(c => data.ClientUuid === c.uuid);
+    client.isEnteredRoom = true;
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
+    // 合計入出者をカウント
+    const enteredClients = room.clients.filter(c => c.isEnteredRoom).length;
+
     // 全員選択中なら通知
-    if (room.weaponSelector === Number(MAX_CONNECTIONS)) {
+    if (enteredClients === Number(MAX_CONNECTIONS)) {
         NetworkHandler.broadcastToRoomByUuid(data, server, data.RoomUuid);
     }
 };

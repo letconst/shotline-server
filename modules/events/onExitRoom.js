@@ -31,7 +31,6 @@ module.exports = (data, sender, server) => {
     }
 
     data.IsExitable = true;
-    room.weaponSelector--;
 
     NetworkHandler.broadcastToRoomByUuid(data, server, data.RoomUuid);
     room.removeClient(data.ClientUuid);
