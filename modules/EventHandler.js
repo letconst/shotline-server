@@ -3,6 +3,7 @@ const { server }     = require('../index');
 
 const events = {
     onInit          : require('./events/onInit'),
+    onCreateRoom    : require('./events/onCreateRoom'),
     onGetAllRoom    : require('./events/onGetAllRoom'),
     onJoinRoom      : require('./events/onJoinRoom'),
     onExitRoom      : require('./events/onExitRoom'),
