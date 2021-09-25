@@ -17,6 +17,18 @@ class Client {
     isRoomReady;
 
     /**
+     * ルームに参加してるか
+     * @type {boolean}
+     */
+    isEnteredRoom;
+
+    /**
+     * 武器を選択したか
+     * @type {boolean}
+     */
+    isSelectedWeapon;
+
+    /**
      * @type {RemoteInfo}
      */
     #remoteInfo;

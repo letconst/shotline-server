@@ -1,6 +1,5 @@
 const NetworkHandler = require('../utils/NetworkHandler');
 const RoomManager    = require('../RoomManager');
-const { eventType }  = require('../definitions/Definitions');
 
 require('../utils/initializer').dotenv();
 const { MAX_CONNECTIONS } = process.env;
@@ -11,7 +10,7 @@ const { MAX_CONNECTIONS } = process.env;
  * @param {RemoteInfo} sender
  * @param {module:dgram.Socket} server
  */
-module.exports = async (data, sender, server) => {
+module.exports = (data, sender, server) => {
     const room      = RoomManager.getRoomByUuid(data.RoomUuid);
     data.IsJoinable = false;
 
@@ -33,17 +32,4 @@ module.exports = async (data, sender, server) => {
     }
 
     NetworkHandler.emit(data, sender, server);
-
-    // 全員揃ったらそれを通知
-    if (room.clientCount === Number(MAX_CONNECTIONS)) {
-        await new Promise(resolve => {
-            setTimeout(resolve, 500);
-        });
-
-        const req = {
-            Type: eventType.MatchComplete
-        };
-
-        NetworkHandler.broadcastToRoom(req, server, room);
-    }
 };

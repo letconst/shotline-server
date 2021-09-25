@@ -22,8 +22,6 @@ class NetworkHandler {
      * @param {Room} room
      */
     static broadcastToRoom(data, server, room) {
-        data.ClientUuid = '';
-
         for (let client of room.clients) {
             this.emit(data, client.remoteInfo, server);
         }
@@ -54,8 +52,6 @@ class NetworkHandler {
      * @param {Room} room
      */
     static broadcastExceptSelfToRoom(data, sender, server, room) {
-        data.ClientUuid = '';
-
         for (let client of room.clients) {
             const {address: cAddress, port: cPort} = client.remoteInfo;
             const {address: sAddress, port: sPort} = sender;

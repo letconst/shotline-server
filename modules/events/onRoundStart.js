@@ -9,6 +9,7 @@ const RoomManager = require('../RoomManager');
 module.exports = (data, __, ___) => {
     const room = RoomManager.getRoomByUuid(data.RoomUuid);
     room.itemManager.startGenerate();
+    room.roundManager.startSuddenDeathCount();
 
     console.info('Round started');
 };
