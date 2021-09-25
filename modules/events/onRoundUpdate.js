@@ -12,6 +12,7 @@ module.exports = (data, sender, server) => {
 
     // アイテム生成状況リセット
     room.itemManager.reset();
+    room.roundManager.stopSuddenDeathCount();
     NetworkHandler.broadcastToRoom(data, server, room);
 
     console.info('Round ended');

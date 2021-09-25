@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const Client         = require('./Client');
 const ItemManager    = require('./ItemManager');
+const RoundManager   = require('./RoundManager');
 
 class Room {
     /**
@@ -26,15 +27,21 @@ class Room {
     itemManager;
 
     /**
+     * @type {RoundManager}
+     */
+    roundManager;
+
+    /**
      * @type {RoomManager}
      */
     #roomManager;
 
     constructor() {
-        this.uuid        = uuidv4();
-        this.clients     = [];
-        this.isInBattle  = false;
-        this.itemManager = new ItemManager(this);
+        this.uuid         = uuidv4();
+        this.clients      = [];
+        this.isInBattle   = false;
+        this.itemManager  = new ItemManager(this);
+        this.roundManager = new RoundManager(this);
     }
 
     /**

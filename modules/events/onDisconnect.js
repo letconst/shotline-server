@@ -21,6 +21,7 @@ module.exports = (data, sender, server) => {
     if (!room) return;
 
     room.itemManager.reset();
+    room.roundManager.stopSuddenDeathCount();
 
     const newReq = {
         Type     : eventType.Refresh,
