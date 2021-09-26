@@ -57,7 +57,8 @@ process
     .on('SIGINT', async () => {
         await postSetActivity({ type: 'stop' });
         process.exit(0);
-    });
+    })
+    .on('uncaughtException', (err) => console.error(err));
 
 /**
  * Discordボットのアクティビティへの稼働状況設定用リクエストをPOSTする
