@@ -18,5 +18,6 @@ module.exports = {
     SuddenDeathStart: 'SuddenDeathStart',
     Disconnect      : 'Disconnect',
     Refresh         : 'Refresh',
+    RoomRemoved     : 'RoomRemoved',
     Error           : 'Error'
 };
