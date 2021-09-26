@@ -1,4 +1,5 @@
 const NetworkHandler = require('./utils/NetworkHandler');
+const RoomManager    = require('./RoomManager');
 const { server }     = require('../index');
 
 const events = {
@@ -39,6 +40,17 @@ class EventHandler {
             NetworkHandler.emitError(sender, server, 'イベントタイプが指定されていません');
 
             return;
+        }
+
+        // ルーム内通信なら最終通信タイムスタンプ更新
+        if (data.hasOwnProperty('RoomUuid') && data.RoomUuid) {
+            const room = RoomManager.getRoomByUuid(data.RoomUuid);
+
+            if (!room) {
+                NetworkHandler.emitError(sender, server, 'このルームは存在しません。');
+            } else {
+                room.updateLastRequestTimestamp();
+            }
         }
 
         const eventKey = `on${data.Type}`;

@@ -58,6 +58,8 @@ class RoomManager {
         }
 
         this.#rooms = tmpRooms;
+
+        console.info(`Room (${uuid}) is removed`);
     }
 
     /**
