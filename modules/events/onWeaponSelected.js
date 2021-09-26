@@ -13,6 +13,8 @@ const { MAX_CONNECTIONS } = process.env;
 module.exports = async (data, sender, server) => {
     const room = RoomManager.getRoomByUuid(data.RoomUuid);
 
+    if (!room) return;
+
     // 選択完了フラグ設定
     const client            = room.clients.find(c => data.ClientUuid === c.uuid);
     client.isSelectedWeapon = true;
