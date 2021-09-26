@@ -36,12 +36,28 @@ class Room {
      */
     #roomManager;
 
+    /**
+     * 最後に通信が行われたタイムスタンプ
+     * @type {number}
+     */
+    #lastRequestTimestamp;
+
+    /**
+     * 無通信時にルームを削除するまでの時間（ミリ秒）
+     * @type {number}
+     */
+    #removeLimitTime = 60 * 3 * 1000;
+
+    #intervalId;
+
     constructor() {
         this.uuid         = uuidv4();
         this.clients      = [];
         this.isInBattle   = false;
         this.itemManager  = new ItemManager(this);
         this.roundManager = new RoundManager(this);
+        this.#intervalId  = -1;
+        this.updateLastRequestTimestamp();
     }
 
     /**
@@ -118,6 +134,48 @@ class Room {
         }
 
         return null;
+    }
+
+    /**
+     * 最終通信タイムスタンプを更新する
+     */
+    updateLastRequestTimestamp() {
+        this.#lastRequestTimestamp = Date.now();
+    }
+
+    /**
+     * 最ルームの利用チェックを開始する。確認は10秒おきに実行される
+     */
+    startIdleCheck() {
+        // 実行中なら終了
+        if (this.#intervalId !== -1) return;
+
+        this.#intervalId = setInterval(() => {
+            // クライアントがいなければチェックを解除
+            if (this.clientCount === 0) {
+                this.stopIdleCheck();
+
+                return;
+            }
+
+            const dt = Date.now() - this.#lastRequestTimestamp;
+
+            // 無通信時のタイムリミットに達していなければ終了
+            if (dt < this.#removeLimitTime) return;
+
+            // ルーム破棄
+            this.roomManager.removeRoomByUuid(this.uuid);
+
+            this.stopIdleCheck();
+            this.#intervalId = -1;
+        }, 10 * 1e3);
+    }
+
+    /**
+     * ルームの利用チェックを停止する
+     */
+    stopIdleCheck() {
+        clearInterval(this.#intervalId);
     }
 }
 

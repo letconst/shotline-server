@@ -1,5 +1,7 @@
-const NetworkHandler = require('./utils/NetworkHandler');
-const Room           = require('./Room');
+let NetworkHandler = require('./utils/NetworkHandler');
+const Room         = require('./Room');
+const eventType    = require('./definitions/eventType');
+const { server }   = require('../index');
 
 const roomUpdateType = {
     create: 0,
@@ -57,7 +59,24 @@ class RoomManager {
             tmpRooms.push(new Room());
         }
 
+        const toRemoveRoom = this.getRoomByUuid(uuid);
+
+        // ルーム内にクライアントがいれば削除通知
+        if (toRemoveRoom.clientCount > 0) {
+            const removedReq = {
+                Type: eventType.RoomRemoved
+            };
+
+            if (!Object.keys(NetworkHandler).length) {
+                NetworkHandler = require('./utils/NetworkHandler');
+            }
+
+            NetworkHandler.broadcastToRoom(removedReq, server, toRemoveRoom);
+        }
+
         this.#rooms = tmpRooms;
+
+        console.info(`Room (${uuid}) is removed`);
     }
 
     /**

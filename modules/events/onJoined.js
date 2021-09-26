@@ -25,5 +25,8 @@ module.exports = (data, sender, server) => {
     // 全プレイヤーが遷移してたらゲーム開始
     if (joinedCount === Number(MAX_CONNECTIONS)) {
         NetworkHandler.broadcastToRoom(data, server, room);
+
+        // 対戦中に設定
+        room.isInBattle = true;
     }
 };
